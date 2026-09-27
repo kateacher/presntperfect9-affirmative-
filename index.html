@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Have &amp; Haven't Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@600;700&display=swap">
+<style>
+  :root{
+    --ground:#F2F6EF;
+    --panel:#FFFFFF;
+    --ink:#15241A;
+    --muted:#586A5D;
+    --line:#D3DFD1;
+    --forest:#1B5E20;
+    --forest-2:#2E7D32;
+    --mint:#CFE8D2;
+    --aff:#23874F;
+    --aff-soft:#DCF1E3;
+    --neg:#C63F37;
+    --neg-soft:#F8DEDB;
+    --sun:#F2B632;
+    --sun-soft:#FFF1CC;
+    --sky:#2F6FA8;
+    --sky-soft:#DCE9F5;
+    --on-dark:#F4FFF5;
+    --shadow:0 3px 0 rgba(21,36,26,.9);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ground:#0E1611;
+      --panel:#16211A;
+      --ink:#E4EFE5;
+      --muted:#9CB0A1;
+      --line:#2A3B2F;
+      --forest:#1E5A26;
+      --forest-2:#2C7A36;
+      --mint:#23402A;
+      --aff:#5CC08A;
+      --aff-soft:#1C3B28;
+      --neg:#F07A70;
+      --neg-soft:#44221F;
+      --sun:#F5C860;
+      --sun-soft:#3E3417;
+      --sky:#7DB3E3;
+      --sky-soft:#1B2E40;
+      --on-dark:#F4FFF5;
+      --shadow:0 3px 0 rgba(0,0,0,.8);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0E1611;
+    --panel:#16211A;
+    --ink:#E4EFE5;
+    --muted:#9CB0A1;
+    --line:#2A3B2F;
+    --forest:#1E5A26;
+    --forest-2:#2C7A36;
+    --mint:#23402A;
+    --aff:#5CC08A;
+    --aff-soft:#1C3B28;
+    --neg:#F07A70;
+    --neg-soft:#44221F;
+    --sun:#F5C860;
+    --sun-soft:#3E3417;
+    --sky:#7DB3E3;
+    --sky-soft:#1B2E40;
+    --on-dark:#F4FFF5;
+    --shadow:0 3px 0 rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+    font-size:18px;
+    line-height:1.55;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding-inline:18px;padding-block:0 90px}
+  h1,h2,h3{font-family:'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;text-wrap:balance;margin:0}
+  .mono{font-family:'JetBrains Mono', ui-monospace, monospace}
+  button{font:inherit;color:inherit}
+
+  /* ---------- School header ---------- */
+  .school{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:stretch;
+    margin-top:14px;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .school > div{padding:12px 16px;display:flex;align-items:center}
+  .school .name{
+    background:var(--forest);color:var(--on-dark);
+    font-family:'Bricolage Grotesque', sans-serif;font-weight:800;
+    font-size:clamp(17px, 2.6vw, 22px);letter-spacing:.04em;
+  }
+  .school .subject{
+    background:var(--forest-2);color:var(--on-dark);
+    font-family:'JetBrains Mono', monospace;font-size:13px;letter-spacing:.08em;
+    justify-content:center;text-transform:uppercase;
+  }
+  .school .unit{
+    background:var(--mint);color:var(--ink);
+    font-family:'JetBrains Mono', monospace;font-size:13px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  @media (max-width:640px){
+    .school{grid-template-columns:1fr}
+    .school .subject,.school .unit{justify-content:flex-start}
+  }
+
+  /* ---------- Sticky progress bar ---------- */
+  .bar{
+    position:sticky;top:env(safe-area-inset-top, 0px);z-index:20;
+    margin-top:12px;
+    background:var(--panel);
+    border:2px solid var(--ink);
+    border-radius:12px;
+    padding:8px 12px;
+    display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+    box-shadow:var(--shadow);
+  }
+  .bar .label{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .meter{flex:1;min-width:140px;height:14px;background:var(--line);border-radius:99px;overflow:hidden}
+  .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aff),var(--forest-2));border-radius:99px;transition:width .3s}
+  .score-pill{font-family:'JetBrains Mono', monospace;font-weight:700;font-size:14px;background:var(--sun);color:#15241A;border-radius:99px;padding:4px 12px}
+  .tbtn{
+    border:2px solid var(--ink);background:var(--panel);border-radius:10px;
+    padding:5px 10px;cursor:pointer;font-family:'JetBrains Mono', monospace;font-size:12px;font-weight:700;letter-spacing:.04em
+  }
+  .tbtn:hover{background:var(--sun-soft)}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    margin-top:18px;
+    background:var(--panel);
+    border:2px solid var(--ink);
+    border-radius:18px;
+    padding:26px 24px;
+    box-shadow:var(--shadow);
+    display:grid;grid-template-columns:1.3fr 1fr;gap:22px;align-items:center;
+  }
+  @media (max-width:760px){.hero{grid-template-columns:1fr}}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--forest-2);font-weight:700}
+  :root[data-theme="dark"] .eyebrow{color:var(--aff)}
+  .hero h1{font-size:clamp(38px, 6.4vw, 64px);line-height:.98;font-weight:800;margin-top:8px;letter-spacing:-.02em}
+  .hero h1 .y{color:var(--aff)}
+  .hero h1 .n{color:var(--neg)}
+  .hero p{margin:12px 0 0;color:var(--muted);max-width:52ch}
+  .level{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .chip{font-family:'JetBrains Mono', monospace;font-size:12px;font-weight:700;border-radius:99px;padding:4px 10px;border:2px solid var(--ink);background:var(--ground)}
+  .chip.cefr{background:var(--forest);color:var(--on-dark);border-color:var(--forest)}
+  .spanish-bridge{
+    background:var(--ground);border:2px dashed var(--line);border-radius:14px;padding:16px;
+  }
+  .spanish-bridge h3{font-size:18px;margin-bottom:8px}
+  .bridge-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:17px}
+  .bridge-row:first-of-type{border-top:0}
+  .bridge-row .arrow{color:var(--muted);font-family:'JetBrains Mono', monospace}
+  .bridge-row b.en{color:var(--aff)}
+  .bridge-row b.enn{color:var(--neg)}
+
+  /* ---------- Sections ---------- */
+  section.block{margin-top:38px;scroll-margin-top:84px}
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+  .sec-num{
+    width:48px;height:48px;border-radius:50%;flex:none;
+    display:grid;place-items:center;
+    background:var(--forest);color:var(--on-dark);
+    font-family:'Bricolage Grotesque', sans-serif;font-weight:800;font-size:20px;
+  }
+  .sec-head h2{font-size:clamp(24px, 3.6vw, 32px);font-weight:800;letter-spacing:-.01em}
+  .sec-head .es{display:block;font-family:'Atkinson Hyperlegible', sans-serif;font-size:15px;font-weight:400;color:var(--muted);letter-spacing:0}
+  .sec-head .mini{margin-left:auto;font-family:'JetBrains Mono', monospace;font-size:13px;font-weight:700;border-radius:99px;padding:4px 12px;background:var(--sun-soft);border:2px solid var(--sun)}
+
+  .card{background:var(--panel);border:2px solid var(--ink);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+
+  /* ---------- Formula ---------- */
+  .formulas{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:760px){.formulas{grid-template-columns:1fr}}
+  .formula{border-radius:16px;padding:18px;border:2px solid var(--ink);box-shadow:var(--shadow)}
+  .formula.aff{background:var(--aff-soft)}
+  .formula.neg{background:var(--neg-soft)}
+  .formula .tag{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono', monospace;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;border-radius:99px;padding:4px 12px;color:#fff}
+  .formula.aff .tag{background:var(--aff)}
+  .formula.neg .tag{background:var(--neg)}
+  :root[data-theme="dark"] .formula .tag{color:#0E1611}
+  .blocks{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+  .blk{border:2px solid var(--ink);border-radius:10px;padding:8px 12px;font-weight:700;background:var(--panel);font-size:17px}
+  .blk.s{background:var(--sky-soft)}
+  .blk.h{background:var(--sun);color:#15241A}
+  .blk.n{background:var(--neg);color:#fff}
+  .blk.p{background:var(--aff);color:#fff}
+  :root[data-theme="dark"] .blk.n, :root[data-theme="dark"] .blk.p{color:#0E1611}
+  .plus{font-family:'JetBrains Mono', monospace;font-weight:700;color:var(--muted)}
+  .ex-line{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px dashed var(--line);font-size:18px}
+  .ex-line:first-of-type{border-top:0}
+  .ex-line .es{color:var(--muted);font-size:15px;font-style:italic;margin-left:auto;text-align:right}
+  .hl-h{background:var(--sun);color:#15241A;border-radius:5px;padding:0 5px;font-weight:700}
+  .hl-n{background:var(--neg);color:#fff;border-radius:5px;padding:0 5px;font-weight:700}
+  .hl-p{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px;text-decoration-color:var(--aff);font-weight:700}
+  .say{
+    flex:none;width:34px;height:34px;border-radius:50%;
+    border:2px solid var(--ink);background:var(--panel);cursor:pointer;
+    display:grid;place-items:center;font-size:15px;
+  }
+  .say:hover{background:var(--sun-soft)}
+  .say[hidden]{display:none!important}
+
+  /* Pronoun table */
+  .ptable-wrap{overflow-x:auto;margin-top:16px}
+  table.ptable{width:100%;border-collapse:separate;border-spacing:0;min-width:520px;font-size:18px;background:var(--panel);border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+  .ptable th{background:var(--forest);color:var(--on-dark);font-family:'JetBrains Mono', monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:10px 12px;text-align:left}
+  .ptable td{padding:10px 12px;border-top:1px solid var(--line)}
+  .ptable td.aff{color:var(--aff);font-weight:700}
+  .ptable td.neg{color:var(--neg);font-weight:700}
+  .ptable tr.grp td{background:var(--ground)}
+
+  /* Contractions */
+  .contract{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px;margin-top:16px}
+  @media (max-width:700px){.contract{grid-template-columns:repeat(2, minmax(0,1fr))}}
+  .ct{background:var(--panel);border:2px solid var(--ink);border-radius:12px;padding:10px 12px;text-align:center}
+  .ct .long{font-size:15px;color:var(--muted)}
+  .ct .short{font-family:'Bricolage Grotesque', sans-serif;font-weight:800;font-size:24px}
+  .ct.neg .short{color:var(--neg)}
+  .ct.aff .short{color:var(--aff)}
+
+  /* Verb bank */
+  .verbs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+  @media (max-width:700px){.verbs{grid-template-columns:1fr}}
+  .vlist{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .v{border:2px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--ground);font-size:16px}
+  .v b{color:var(--forest-2)}
+  :root[data-theme="dark"] .v b{color:var(--aff)}
+  .v.irr{border-color:var(--sun);background:var(--sun-soft)}
+  .v.irr b{color:var(--ink)}
+
+  /* CCQ */
+  .ccq{margin-top:16px}
+  .ccq-item{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0;border-top:1px dashed var(--line)}
+  .ccq-item:first-child{border-top:0}
+  .ccq-item .q{flex:1;min-width:220px}
+  .reveal{border:2px solid var(--ink);border-radius:10px;background:var(--sun-soft);cursor:pointer;padding:6px 12px;font-weight:700}
+  .reveal.shown{background:var(--aff-soft);cursor:default}
+
+  /* ---------- Exercises ---------- */
+  .ex-intro{display:flex;gap:12px;align-items:flex-start;background:var(--sky-soft);border:2px solid var(--sky);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:17px}
+  .ex-intro .how{font-family:'JetBrains Mono', monospace;font-size:12px;font-weight:700;letter-spacing:.08em;background:var(--sky);color:#fff;border-radius:8px;padding:3px 8px;flex:none}
+  :root[data-theme="dark"] .ex-intro .how{color:#0E1611}
+  .ex-intro .es{display:block;color:var(--muted);font-size:15px;font-style:italic}
+  .item{padding:14px 0;border-top:1px solid var(--line)}
+  .item:first-child{border-top:0;padding-top:2px}
+  .prompt{display:flex;align-items:flex-start;gap:10px;font-size:19px;margin-bottom:10px}
+  .prompt .n{flex:none;font-family:'JetBrains Mono', monospace;font-weight:700;font-size:14px;background:var(--ink);color:var(--panel);border-radius:8px;padding:3px 8px;margin-top:3px}
+  .prompt .txt{flex:1}
+  .sign{flex:none;font-family:'JetBrains Mono', monospace;font-weight:700;font-size:13px;border-radius:99px;padding:3px 10px;margin-top:3px}
+  .sign.aff{background:var(--aff-soft);color:var(--aff);border:2px solid var(--aff)}
+  .sign.neg{background:var(--neg-soft);color:var(--neg);border:2px solid var(--neg)}
+  .blank{display:inline-block;min-width:86px;border-bottom:3px solid var(--ink);text-align:center;font-weight:700;padding:0 6px;line-height:1.2}
+  .blank.ok{border-bottom-color:var(--aff);color:var(--aff)}
+  .blank.bad{border-bottom-color:var(--neg);color:var(--neg)}
+  .opts{display:flex;flex-wrap:wrap;gap:10px;padding-left:48px}
+  @media (max-width:520px){.opts{padding-left:0}}
+  .opt{
+    min-height:48px;padding:8px 18px;border-radius:12px;
+    border:2px solid var(--ink);background:var(--panel);cursor:pointer;
+    font-weight:700;font-size:18px;box-shadow:0 2px 0 var(--ink);
+  }
+  .opt:hover:not(:disabled){background:var(--sun-soft);transform:translateY(-1px)}
+  .opt:disabled{cursor:default;opacity:.55;box-shadow:none}
+  .opt.right{background:var(--aff);color:#fff;opacity:1;border-color:var(--ink)}
+  .opt.wrong{background:var(--neg);color:#fff;opacity:1}
+  :root[data-theme="dark"] .opt.right, :root[data-theme="dark"] .opt.wrong{color:#0E1611}
+  .fb{margin-top:8px;padding-left:48px;font-size:16px;display:flex;align-items:center;gap:10px;min-height:0}
+  @media (max-width:520px){.fb{padding-left:0}}
+  .fb.ok{color:var(--aff);font-weight:700}
+  .fb.no{color:var(--neg);font-weight:700}
+  .fb .fix{color:var(--ink);font-weight:400}
+
+  /* Build */
+  .build-answer{
+    min-height:58px;border:2px dashed var(--ink);border-radius:12px;padding:8px;
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--ground);margin-left:48px;
+  }
+  .build-answer:empty::before{content:"Toca las palabras en orden · Tap the words in order";color:var(--muted);font-style:italic;font-size:15px;padding-left:6px}
+  .build-pool{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0 48px}
+  @media (max-width:520px){.build-answer,.build-pool{margin-left:0}}
+  .tile{
+    border:2px solid var(--ink);border-radius:10px;padding:8px 14px;cursor:pointer;
+    background:var(--panel);font-weight:700;font-size:18px;box-shadow:0 2px 0 var(--ink);
+  }
+  .tile.hv{background:var(--sun);color:#15241A}
+  .tile.ng{background:var(--neg);color:#fff}
+  :root[data-theme="dark"] .tile.ng{color:#0E1611}
+  .tile:hover{transform:translateY(-1px)}
+  .build-controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 0 48px}
+  @media (max-width:520px){.build-controls{margin-left:0}}
+  .act{border:2px solid var(--ink);border-radius:10px;padding:8px 16px;cursor:pointer;font-weight:700;background:var(--panel)}
+  .act.primary{background:var(--forest);color:var(--on-dark);border-color:var(--forest)}
+  .act:hover{filter:brightness(1.05)}
+  .act:disabled{opacity:.5;cursor:default}
+
+  /* Type */
+  .type-row{display:flex;gap:10px;flex-wrap:wrap;margin-left:48px;align-items:center}
+  @media (max-width:520px){.type-row{margin-left:0}}
+  .type-row input{
+    font:inherit;font-size:19px;font-weight:700;
+    border:2px solid var(--ink);border-radius:10px;padding:8px 12px;min-width:0;width:220px;max-width:100%;
+    background:var(--panel);color:var(--ink);
+  }
+  .type-row input.ok{border-color:var(--aff);background:var(--aff-soft)}
+  .type-row input.bad{border-color:var(--neg);background:var(--neg-soft)}
+
+  .ex-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:2px solid var(--ink)}
+  .ex-score{font-family:'JetBrains Mono', monospace;font-weight:700;font-size:14px}
+  .ex-score b{color:var(--aff)}
+
+  /* Personalization */
+  .me{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+  @media (max-width:640px){.me{grid-template-columns:1fr}}
+  .me select{font:inherit;font-size:18px;font-weight:700;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;background:var(--panel);color:var(--ink);max-width:100%}
+  .my-list{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+  .my-list li{display:flex;align-items:center;gap:10px;background:var(--ground);border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-size:18px}
+  .my-list li.neg{border-color:var(--neg)}
+  .my-list li.aff{border-color:var(--aff)}
+  .my-list .rm{margin-left:auto;border:0;background:none;cursor:pointer;color:var(--muted);font-size:20px}
+  .partner{margin-top:14px;background:var(--sun-soft);border:2px solid var(--sun);border-radius:12px;padding:12px 14px;font-size:17px}
+
+  /* Final report */
+  .report{background:var(--forest);color:var(--on-dark);border-radius:18px;padding:24px;box-shadow:var(--shadow);border:2px solid var(--ink)}
+  .report h2{font-size:clamp(26px,4vw,36px)}
+  .report .big{font-family:'Bricolage Grotesque', sans-serif;font-weight:800;font-size:clamp(48px,9vw,80px);line-height:1;margin:10px 0}
+  .report .stars{font-size:38px;letter-spacing:6px}
+  .report .msg{font-size:19px}
+  .report .msg .es{display:block;opacity:.8;font-style:italic;font-size:16px}
+  .report-grid{display:grid;grid-template-columns:repeat(3, minmax(0,1fr));gap:8px;margin-top:16px}
+  @media (max-width:640px){.report-grid{grid-template-columns:repeat(2, minmax(0,1fr))}}
+  .rg{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:8px 10px;font-family:'JetBrains Mono', monospace;font-size:13px;display:flex;justify-content:space-between;gap:6px}
+  .rg b{color:var(--sun)}
+
+  /* ---------- Uses matching ---------- */
+  .examples{display:grid;gap:8px;margin-bottom:16px}
+  .exm{display:flex;align-items:center;gap:10px;background:var(--ground);border:2px solid var(--line);border-radius:12px;padding:8px 12px;font-size:18px}
+  .exm .L{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:var(--forest);color:var(--on-dark);font-family:'Bricolage Grotesque', sans-serif;font-weight:800}
+  .match-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .match-row select{font:inherit;font-size:18px;font-weight:700;border:2px solid var(--ink);border-radius:10px;padding:6px 10px;background:var(--panel);color:var(--ink);min-width:88px}
+  .match-row select.ok{border-color:var(--aff);background:var(--aff-soft)}
+  .match-row select.bad{border-color:var(--neg);background:var(--neg-soft)}
+  .match-row .use{flex:1;min-width:220px;font-size:19px}
+  .match-row .use small{display:block;color:var(--muted);font-size:15px}
+  .kw{font-family:'JetBrains Mono', monospace;font-weight:700;font-size:13px;background:var(--sun);color:#15241A;border-radius:99px;padding:2px 10px}
+
+  /* ---------- Divider ---------- */
+  .divider{margin-top:48px;background:var(--forest);color:var(--on-dark);border-radius:18px;padding:20px 22px;border:2px solid var(--ink);box-shadow:var(--shadow)}
+  .divider .k{font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sun)}
+  .divider h2{font-size:clamp(24px,4vw,34px);font-weight:800;margin-top:4px}
+  .divider p{margin:6px 0 0;opacity:.9;font-size:17px}
+
+  /* ---------- Sentence (typed) ---------- */
+  .type-row input.wide{flex:1 1 320px;width:auto}
+  .err-hl{background:var(--neg);color:#fff;border-radius:5px;padding:0 5px;font-weight:700}
+  :root[data-theme="dark"] .err-hl{color:#0E1611}
+  .wrong-line{color:var(--muted)}
+
+  /* ---------- Colored answers ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;font-size:15px;align-items:center}
+  .legend span.lg{display:inline-flex;align-items:center;gap:6px}
+  .chipline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+  .rw{border:2px solid var(--ink);border-radius:8px;padding:3px 10px;font-weight:700;font-size:17px;color:var(--ink)}
+  .rw.s{background:var(--sky-soft);border-color:var(--sky)}
+  .rw.h{background:var(--sun);color:#15241A}
+  .rw.n{background:var(--neg);color:#fff}
+  .rw.p{background:var(--aff);color:#fff}
+  .rw.c{background:var(--ground);border-color:var(--line)}
+  :root[data-theme="dark"] .rw.n, :root[data-theme="dark"] .rw.p{color:#0E1611}
+  .fb.col{display:block}
+  .fb.col .say{display:inline-grid;vertical-align:middle;margin-left:8px}
+  .fb .chipline{margin-top:8px}
+
+  .teacher{margin-top:26px;background:var(--panel);border:2px dashed var(--muted);border-radius:14px;padding:16px 18px;font-size:16px;color:var(--muted)}
+  .teacher b{color:var(--ink)}
+  .teacher ul{margin:6px 0 0;padding-left:20px}
+
+  .footer{margin-top:30px;text-align:center;font-family:'JetBrains Mono', monospace;font-size:12px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+
+  :focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){ *{transition:none!important} .opt:hover,.tile:hover{transform:none} }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+  <!-- School header -->
+  <div class="school" role="banner">
+    <div class="name">SIMON ARAUJO HIGHSCHOOL</div>
+    <div class="subject">English · Grade 9º</div>
+    <div class="unit">Unit 08 · Present Perfect</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="bar" aria-label="Progreso">
+    <span class="label">Progress</span>
+    <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="meter"><i id="meterFill"></i></div>
+    <span class="score-pill" id="scorePill">0 / 0</span>
+    <button class="tbtn" type="button" id="themeBtn">Light / Dark</button>
+    <button class="tbtn" type="button" id="resetAll">Reset all</button>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Model Citizens &amp; Good Neighbours</div>
+      <h1><span class="y">I have</span> helped.<br><span class="n">I haven't</span> helped.</h1>
+      <p>Aprende a decir lo que <b>sí has hecho</b> y lo que <b>no has hecho</b> con el Present Perfect. Lee, escucha, practica y habla.</p>
+      <div class="level">
+        <span class="chip cefr">CEFR A1 → A1.3</span>
+        <span class="chip">Affirmative ✓</span>
+        <span class="chip">Negative ✗</span>
+        <span class="chip">14 practice games</span>
+      </div>
+    </div>
+    <div class="spanish-bridge">
+      <h3>English ↔ Español</h3>
+      <div class="bridge-row"><b class="en">I have helped</b><span class="arrow">=</span><span>Yo he ayudado</span></div>
+      <div class="bridge-row"><b class="en">She has visited</b><span class="arrow">=</span><span>Ella ha visitado</span></div>
+      <div class="bridge-row"><b class="en">We have cleaned</b><span class="arrow">=</span><span>Hemos limpiado</span></div>
+      <div class="bridge-row"><b class="enn">I haven't helped</b><span class="arrow">=</span><span>No he ayudado</span></div>
+      <div class="bridge-row"><b class="enn">He hasn't played</b><span class="arrow">=</span><span>Él no ha jugado</span></div>
+    </div>
+  </header>
+
+  <!-- 1 · STRUCTURE -->
+  <section class="block" aria-labelledby="s1">
+    <div class="sec-head">
+      <div class="sec-num">1</div>
+      <h2 id="s1">The structure <span class="es">La estructura · 2 fórmulas</span></h2>
+    </div>
+
+    <div class="formulas">
+      <div class="formula aff">
+        <span class="tag">✓ Affirmative</span>
+        <div class="blocks">
+          <span class="blk s">Subject</span><span class="plus">+</span>
+          <span class="blk h">have / has</span><span class="plus">+</span>
+          <span class="blk p">past participle</span>
+        </div>
+        <div class="ex-line"><button class="say" type="button" data-say="I have helped my neighbour." aria-label="Listen">🔊</button><span>I <span class="hl-h">have</span> <span class="hl-p">helped</span> my neighbour.</span><span class="es">He ayudado a mi vecino.</span></div>
+        <div class="ex-line"><button class="say" type="button" data-say="She has cleaned the park." aria-label="Listen">🔊</button><span>She <span class="hl-h">has</span> <span class="hl-p">cleaned</span> the park.</span><span class="es">Ella ha limpiado el parque.</span></div>
+        <div class="ex-line"><button class="say" type="button" data-say="They have visited the hospital." aria-label="Listen">🔊</button><span>They <span class="hl-h">have</span> <span class="hl-p">visited</span> the hospital.</span><span class="es">Han visitado el hospital.</span></div>
+      </div>
+
+      <div class="formula neg">
+        <span class="tag">✗ Negative</span>
+        <div class="blocks">
+          <span class="blk s">Subject</span><span class="plus">+</span>
+          <span class="blk n">haven't / hasn't</span><span class="plus">+</span>
+          <span class="blk p">past participle</span>
+        </div>
+        <div class="ex-line"><button class="say" type="button" data-say="I haven't helped my neighbour." aria-label="Listen">🔊</button><span>I <span class="hl-n">haven't</span> <span class="hl-p">helped</span> my neighbour.</span><span class="es">No he ayudado a mi vecino.</span></div>
+        <div class="ex-line"><button class="say" type="button" data-say="She hasn't cleaned the park." aria-label="Listen">🔊</button><span>She <span class="hl-n">hasn't</span> <span class="hl-p">cleaned</span> the park.</span><span class="es">Ella no ha limpiado el parque.</span></div>
+        <div class="ex-line"><button class="say" type="button" data-say="They haven't visited the hospital." aria-label="Listen">🔊</button><span>They <span class="hl-n">haven't</span> <span class="hl-p">visited</span> the hospital.</span><span class="es">No han visitado el hospital.</span></div>
+      </div>
+    </div>
+
+    <div class="ptable-wrap">
+      <table class="ptable">
+        <thead><tr><th>Subject</th><th>✓ Affirmative</th><th>✗ Negative</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><b>I · You · We · They</b></td><td class="aff">have</td><td class="neg">have not = haven't</td><td>We <b>haven't</b> played.</td></tr>
+          <tr class="grp"><td><b>He · She · It</b></td><td class="aff">has</td><td class="neg">has not = hasn't</td><td>He <b>has</b> played.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="contract" aria-label="Contractions">
+      <div class="ct aff"><div class="long">I have</div><div class="short">I've</div></div>
+      <div class="ct aff"><div class="long">she has</div><div class="short">she's</div></div>
+      <div class="ct neg"><div class="long">have not</div><div class="short">haven't</div></div>
+      <div class="ct neg"><div class="long">has not</div><div class="short">hasn't</div></div>
+    </div>
+  </section>
+
+  <!-- 2 · VERBS -->
+  <section class="block" aria-labelledby="s2">
+    <div class="sec-head">
+      <div class="sec-num">2</div>
+      <h2 id="s2">Our verbs <span class="es">Los verbos de hoy · base → past participle</span></h2>
+    </div>
+    <div class="verbs">
+      <div class="card">
+        <h3>Regular · + ed</h3>
+        <div class="vlist">
+          <span class="v">help → <b>helped</b></span>
+          <span class="v">visit → <b>visited</b></span>
+          <span class="v">clean → <b>cleaned</b></span>
+          <span class="v">watch → <b>watched</b></span>
+          <span class="v">play → <b>played</b></span>
+          <span class="v">cook → <b>cooked</b></span>
+          <span class="v">call → <b>called</b></span>
+          <span class="v">open → <b>opened</b></span>
+          <span class="v">finish → <b>finished</b></span>
+          <span class="v">dance → <b>danced</b></span>
+          <span class="v">study → <b>studied</b></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Irregular · only 5</h3>
+        <div class="vlist">
+          <span class="v irr">buy → <b>bought</b></span>
+          <span class="v irr">do → <b>done</b></span>
+          <span class="v irr">make → <b>made</b></span>
+          <span class="v irr">have → <b>had</b></span>
+          <span class="v irr">go → <b>gone</b></span>
+        </div>
+        <p style="margin:12px 0 0;color:var(--muted);font-size:16px">💡 Estos 5 no llevan <b>-ed</b>. ¡Apréndelos de memoria!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · CHECK -->
+  <section class="block" aria-labelledby="s3">
+    <div class="sec-head">
+      <div class="sec-num">3</div>
+      <h2 id="s3">Think! <span class="es">Preguntas para comprobar · Concept check</span></h2>
+    </div>
+    <div class="card">
+      <p style="margin:0 0 4px;font-size:19px"><button class="say" type="button" data-say="Maria has visited Cartagena." aria-label="Listen" style="display:inline-grid;vertical-align:middle;margin-right:8px">🔊</button><b>“Maria has visited Cartagena.”</b></p>
+      <div class="ccq">
+        <div class="ccq-item"><span class="q">Did Maria go to Cartagena? <span style="color:var(--muted)">(¿Fue María a Cartagena?)</span></span><button class="reveal" type="button" data-a="✓ Yes, she did.">Show answer</button></div>
+        <div class="ccq-item"><span class="q">Do we know <b>when</b>? <span style="color:var(--muted)">(¿Sabemos cuándo?)</span></span><button class="reveal" type="button" data-a="✗ No. It's not important.">Show answer</button></div>
+        <div class="ccq-item"><span class="q">Is it an experience in her life? <span style="color:var(--muted)">(¿Es una experiencia?)</span></span><button class="reveal" type="button" data-a="✓ Yes!">Show answer</button></div>
+      </div>
+      <p style="margin:14px 0 0;font-size:19px"><button class="say" type="button" data-say="Carlos hasn't finished his homework." aria-label="Listen" style="display:inline-grid;vertical-align:middle;margin-right:8px">🔊</button><b>“Carlos hasn't finished his homework.”</b></p>
+      <div class="ccq">
+        <div class="ccq-item"><span class="q">Is the homework ready now? <span style="color:var(--muted)">(¿La tarea está lista?)</span></span><button class="reveal" type="button" data-a="✗ No, it isn't.">Show answer</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXERCISES -->
+  <div id="exercises"></div>
+
+  <!-- ABOUT ME -->
+  <section class="block" aria-labelledby="sme">
+    <div class="sec-head">
+      <div class="sec-num">★</div>
+      <h2 id="sme">Talk about you! <span class="es">Habla de ti · Personal sentences</span></h2>
+    </div>
+    <div class="card">
+      <div class="ex-intro"><span class="how">SPEAK</span><div>Choose, make a true sentence, and say it to your partner.<span class="es">Escoge, forma una oración VERDADERA sobre ti y díla a tu compañero.</span></div></div>
+      <div class="me">
+        <select id="meSign" aria-label="Affirmative or negative">
+          <option value="have">I have ✓</option>
+          <option value="haven't">I haven't ✗</option>
+        </select>
+        <select id="meAct" aria-label="Activity">
+          <option>helped my neighbour.</option>
+          <option>visited Cartagena.</option>
+          <option>cooked for my family.</option>
+          <option>cleaned my room this week.</option>
+          <option>watched a movie in English.</option>
+          <option>played football today.</option>
+          <option>bought a present for my mom.</option>
+          <option>done my homework today.</option>
+          <option>made a new friend this year.</option>
+          <option>gone to the beach this year.</option>
+        </select>
+        <button class="act primary" type="button" id="meAdd">Add ＋</button>
+      </div>
+      <ul class="my-list" id="myList"></ul>
+      <div class="partner">🗣️ <b>Partner question:</b> “Have you ever … ?” → <b>“Yes, I have.”</b> / <b>“No, I haven't.”</b></div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="block" aria-labelledby="srep">
+    <div class="report">
+      <h2 id="srep">Your score</h2>
+      <div class="big" id="bigScore">0 / 0</div>
+      <div class="stars" id="stars" aria-label="Stars">☆☆☆</div>
+      <div class="msg" id="msg">Start the games! <span class="es">¡Empieza los juegos!</span></div>
+      <div class="report-grid" id="reportGrid"></div>
+    </div>
+  </section>
+
+  <div class="teacher">
+    <b>Teacher's note (TESOL).</b> Secuencia <b>PPP</b>: Presentation (secciones 1–3, con puente L1 español y preguntas CCQ), Practice (G1 usos, G2–G10 práctica guiada, G11–G14 práctica controlada con mediación cognitiva) y Production (“Talk about you!” en parejas).
+    <ul>
+      <li>G1 “¿Para qué se usa?” (10 min): discútalo en voz alta antes de revelar; pida justificar con la palabra clave (<i>ever, just, since, yet, never</i>).</li>
+      <li>G11–G14 son los mismos ejercicios del cuadernillo impreso: úselos para corregir en grupo, proyectando las respuestas en colores.</li>
+      <li>Use el 🔊 para <i>drilling</i> coral: toda la clase repite 2 veces.</li>
+      <li>Evaluación formativa: quienes saquen menos de 70% repiten “Have or has?”, “Haven't or hasn't?” y “Short forms”.</li>
+    </ul>
+  </div>
+
+  <div class="footer">Simon Araujo Highschool · Grade 9º · Present Perfect ✓ ✗ · 2026</div>
+</div>
+
+<script>
+(function(){
+  // ---------- Speech ----------
+  const canSpeak = typeof window !== 'undefined' && 'speechSynthesis' in window;
+  function say(text){
+    if(!canSpeak) return;
+    try{
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US'; u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    }catch(e){}
+  }
+  function wireSay(root){
+    root.querySelectorAll('.say').forEach(b=>{
+      if(!canSpeak){ b.hidden = true; return; }
+      if(b.dataset.wired) return;
+      b.dataset.wired = '1';
+      b.addEventListener('click', ()=> say(b.dataset.say));
+    });
+  }
+  function sayBtn(){ return canSpeak ? ' <button class="say" type="button" aria-label="Listen">🔊</button>' : ''; }
+  function hookSay(scope, text){ const sb = scope.querySelector('.say:not([data-wired])'); if(sb){ sb.dataset.wired='1'; sb.addEventListener('click', ()=> say(text)); } }
+
+  // ---------- Theme ----------
+  const themeBtn = document.getElementById('themeBtn');
+  try{
+    const t = localStorage.getItem('hhlab-theme');
+    if(t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+  }catch(e){}
+  themeBtn.addEventListener('click', ()=>{
+    const cur = document.documentElement.getAttribute('data-theme');
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const next = cur === 'dark' ? 'light' : cur === 'light' ? 'dark' : (dark ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('hhlab-theme', next); }catch(e){}
+  });
+
+  // ---------- CCQ reveal ----------
+  document.querySelectorAll('.reveal').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if(b.classList.contains('shown')) return;
+      b.textContent = b.dataset.a;
+      b.classList.add('shown');
+    });
+  });
+
+  // ---------- Helpers ----------
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+    return a;
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  function fillSentence(q, word){ return q.replace('___', word).replace(/\s*\([^)]*\)\s*$/, ''); }
+  function signTag(s){
+    if(s === 'aff') return '<span class="sign aff">✓</span>';
+    if(s === 'neg') return '<span class="sign neg">✗</span>';
+    return '';
+  }
+  function norm(t){ return String(t).toLowerCase().replace(/[’`´]/g,"'").replace(/\s+/g,' ').trim().replace(/[.!]$/,''); }
+  // Sentence-level normalizer: expands contractions, ignores punctuation/case, centre=center
+  function normS(t){
+    let s = ' ' + String(t).toLowerCase().replace(/[’`´]/g,"'") + ' ';
+    s = s.replace(/[.,!?;:]/g,' ');
+    s = s.replace(/\bhaven't\b/g,'have not').replace(/\bhasn't\b/g,'has not')
+         .replace(/\b(i|you|we|they)'ve\b/g,'$1 have')
+         .replace(/\b(he|she|it)'s\b/g,'$1 has')
+         .replace(/\bcenter\b/g,'centre');
+    return s.replace(/\s+/g,' ').trim();
+  }
+  const AUX = ['have','has',"haven't","hasn't"];
+  // Colors a Present Perfect sentence by role: subject / have-has / participle / complement
+  function colorize(sentence){
+    const clean = sentence.replace(/[.!?]$/,'');
+    const toks = clean.split(' ');
+    let ai = toks.findIndex(t=> AUX.includes(t.toLowerCase()));
+    let html = '<div class="chipline">';
+    toks.forEach((t, k)=>{
+      let cls = 'c';
+      if(ai >= 0){
+        if(k < ai) cls = 's';
+        else if(k === ai) cls = t.toLowerCase().includes("n't") ? 'n' : 'h';
+        else if(k === ai + 1) cls = 'p';
+      }
+      html += '<span class="rw ' + cls + '">' + esc(t) + '</span>';
+    });
+    return html + '<span class="rw c">.</span></div>';
+  }
+
+  // ---------- Data ----------
+  const EX = [
+    { id:'e0', title:'What is it for?', es:'¿Para qué se usa? · 10 min', how:'MATCH',
+      en:'Match each USE with its example. Choose the letter.', esi:'Une cada USO con el ejemplo que le corresponde. Escoge la letra.', type:'match',
+      examples:[
+        ['A','She has just bought a new phone.'],
+        ['B','Have you ever visited Cartagena?'],
+        ['C','I have never eaten sushi.'],
+        ['D','He has lived here since 2019.'],
+        ['E',"They haven't finished the project yet."],
+      ],
+      items:[
+        {use:'Experiencia de vida (sin decir cuándo)', en:'Life experience (no time)', a:'B', kw:'ever'},
+        {use:'Acción reciente con resultado ahora', en:'Recent action, result now', a:'A', kw:'just'},
+        {use:'Duración desde el pasado hasta hoy', en:'From the past until today', a:'D', kw:'since'},
+        {use:'Algo que NO ha pasado (todavía)', en:'Something that has NOT happened (yet)', a:'E', kw:'yet'},
+        {use:'Experiencia negativa (nunca)', en:'Negative experience (never)', a:'C', kw:'never'},
+      ]},
+    { id:'e1', title:'Have or has?', es:'¿Have o has? · Afirmativo', how:'TAP',
+      en:'Choose the right word.', esi:'Escoge la palabra correcta según el sujeto.', type:'choice',
+      items:[
+        {q:'I ___ cleaned my room.', o:['have','has'], a:'have', s:'aff'},
+        {q:'She ___ helped her mother.', o:['have','has'], a:'has', s:'aff'},
+        {q:'We ___ visited our grandma.', o:['have','has'], a:'have', s:'aff'},
+        {q:'He ___ played football today.', o:['have','has'], a:'has', s:'aff'},
+        {q:'They ___ watched a movie.', o:['have','has'], a:'have', s:'aff'},
+        {q:'My cat ___ played with a ball.', o:['have','has'], a:'has', s:'aff'},
+        {q:'You ___ cooked rice.', o:['have','has'], a:'have', s:'aff'},
+        {q:'Maria ___ studied English.', o:['have','has'], a:'has', s:'aff'},
+      ]},
+    { id:'e2', title:"Haven't or hasn't?", es:"¿Haven't o hasn't? · Negativo", how:'TAP',
+      en:'Choose the right negative.', esi:'Escoge la forma negativa correcta.', type:'choice',
+      items:[
+        {q:"I ___ finished my homework.", o:["haven't","hasn't"], a:"haven't", s:'neg'},
+        {q:"He ___ called his friend.", o:["haven't","hasn't"], a:"hasn't", s:'neg'},
+        {q:"We ___ watched the video.", o:["haven't","hasn't"], a:"haven't", s:'neg'},
+        {q:"She ___ cleaned the kitchen.", o:["haven't","hasn't"], a:"hasn't", s:'neg'},
+        {q:"They ___ visited the museum.", o:["haven't","hasn't"], a:"haven't", s:'neg'},
+        {q:"Carlos ___ played basketball.", o:["haven't","hasn't"], a:"hasn't", s:'neg'},
+        {q:"You ___ opened the door.", o:["haven't","hasn't"], a:"haven't", s:'neg'},
+        {q:"My mom ___ cooked dinner.", o:["haven't","hasn't"], a:"hasn't", s:'neg'},
+      ]},
+    { id:'e3', title:'Yes or no sentence?', es:'¿Afirmativa o negativa?', how:'SORT', keep:true,
+      en:'Is the sentence affirmative ✓ or negative ✗?', esi:'¿La oración es afirmativa o negativa?', type:'choice',
+      items:[
+        {q:'She has helped her neighbour.', o:['✓ Affirmative','✗ Negative'], a:'✓ Affirmative', noBlank:true},
+        {q:"I haven't visited Bogotá.", o:['✓ Affirmative','✗ Negative'], a:'✗ Negative', noBlank:true},
+        {q:'They have cleaned the park.', o:['✓ Affirmative','✗ Negative'], a:'✓ Affirmative', noBlank:true},
+        {q:"He hasn't watched the news.", o:['✓ Affirmative','✗ Negative'], a:'✗ Negative', noBlank:true},
+        {q:'We have played in the street.', o:['✓ Affirmative','✗ Negative'], a:'✓ Affirmative', noBlank:true},
+        {q:"My brother hasn't studied.", o:['✓ Affirmative','✗ Negative'], a:'✗ Negative', noBlank:true},
+      ]},
+    { id:'e4', title:'The past participle', es:'Escoge el participio pasado', how:'TAP',
+      en:'Choose the past participle.', esi:'Mira el verbo entre paréntesis y escoge su participio.', type:'choice',
+      items:[
+        {q:'I have ___ my room. (clean)', o:['cleaned','clean','cleaning'], a:'cleaned'},
+        {q:'She has ___ a cake. (make)', o:['maked','made','make'], a:'made'},
+        {q:'We have ___ our homework. (do)', o:['did','doed','done'], a:'done'},
+        {q:'He has ___ a new ball. (buy)', o:['bought','buyed','buy'], a:'bought'},
+        {q:'They have ___ to the park. (go)', o:['goed','gone','went'], a:'gone'},
+        {q:"I haven't ___ my friend. (call)", o:['call','called','calling'], a:'called'},
+        {q:"She hasn't ___ Cartagena. (visit)", o:['visiting','visit','visited'], a:'visited'},
+        {q:'We have ___ a good time. (have)', o:['had','haved','has'], a:'had'},
+      ]},
+    { id:'e5', title:'Make it negative', es:'Convierte a negativo', how:'TAP', full:true,
+      en:'Choose the correct negative sentence.', esi:'Escoge la oración negativa correcta.', type:'choice', wide:true,
+      items:[
+        {q:'I have cleaned my room.', o:["I haven't cleaned my room.","I hasn't cleaned my room.","I haven't clean my room."], a:"I haven't cleaned my room.", noBlank:true},
+        {q:'She has helped her dad.', o:["She haven't helped her dad.","She hasn't helped her dad.","She hasn't help her dad."], a:"She hasn't helped her dad.", noBlank:true},
+        {q:'We have played football.', o:["We don't played football.","We hasn't played football.","We haven't played football."], a:"We haven't played football.", noBlank:true},
+        {q:'He has done his homework.', o:["He hasn't done his homework.","He hasn't did his homework.","He haven't done his homework."], a:"He hasn't done his homework.", noBlank:true},
+        {q:'They have visited the zoo.', o:["They not have visited the zoo.","They haven't visited the zoo.","They hasn't visited the zoo."], a:"They haven't visited the zoo.", noBlank:true},
+        {q:'My friend has bought a phone.', o:["My friend hasn't buyed a phone.","My friend haven't bought a phone.","My friend hasn't bought a phone."], a:"My friend hasn't bought a phone.", noBlank:true},
+      ]},
+    { id:'e6', title:'Short forms', es:'Contracciones', how:'TAP', full:true,
+      en:'Choose the short form.', esi:'Escoge la forma corta (contracción).', type:'choice',
+      items:[
+        {q:'I have = ___', o:["I've","I's","I'v"], a:"I've"},
+        {q:'She has = ___', o:["She've","She's","Shes'"], a:"She's"},
+        {q:'We have not = ___', o:["We hasn't","We haven't","We havent'"], a:"We haven't"},
+        {q:'He has not = ___', o:["He hasn't","He haven't","He has'nt"], a:"He hasn't"},
+        {q:'They have = ___', o:["They's","They've","The've"], a:"They've"},
+        {q:'You have not = ___', o:["You hasn't","You'ven't","You haven't"], a:"You haven't"},
+      ]},
+    { id:'e7', title:'Build the sentence', es:'Ordena las palabras', how:'BUILD',
+      en:'Tap the words in the correct order.', esi:'Toca las palabras en el orden correcto. Toca una palabra de arriba para quitarla.', type:'build',
+      items:[
+        {w:['I','have','cleaned','my','room'], s:'aff'},
+        {w:['She','has','helped','her','friend'], s:'aff'},
+        {w:['We',"haven't",'watched','the','movie'], s:'neg'},
+        {w:['He',"hasn't",'done','his','homework'], s:'neg'},
+        {w:['They','have','visited','the','park'], s:'aff'},
+        {w:['My','mom',"hasn't",'cooked','lunch'], s:'neg'},
+      ]},
+    { id:'e8', title:'Write the word', es:'Escribe la palabra que falta', how:'WRITE',
+      en:'Write the missing word. Look at ✓ or ✗.', esi:'Escribe la palabra que falta. Mira si es ✓ (afirmativa) o ✗ (negativa).', type:'type',
+      items:[
+        {q:'I ___ visited my aunt.', a:['have'], s:'aff'},
+        {q:'She ___ cleaned her room.', a:["hasn't","has not"], s:'neg'},
+        {q:'We ___ played in the park.', a:['have'], s:'aff'},
+        {q:'He ___ watched TV today.', a:["hasn't","has not"], s:'neg'},
+        {q:'They have ___ the teacher. (help)', a:['helped'], s:'aff'},
+        {q:"Maria hasn't ___ her homework. (do)", a:['done'], s:'neg'},
+      ]},
+    { id:'e9', title:'Find the mistake', es:'¿Correcta o incorrecta?', how:'CHECK', keep:true,
+      en:'Is the sentence correct?', esi:'¿La oración está bien escrita? Si no, mira la corrección.', type:'choice',
+      items:[
+        {q:'She have helped her friend.', o:['✓ Correct','✗ Wrong'], a:'✗ Wrong', fix:'She has helped her friend.', noBlank:true},
+        {q:'We have visited the museum.', o:['✓ Correct','✗ Wrong'], a:'✓ Correct', noBlank:true},
+        {q:"He haven't called me.", o:['✓ Correct','✗ Wrong'], a:'✗ Wrong', fix:"He hasn't called me.", noBlank:true},
+        {q:'I have buyed a present.', o:['✓ Correct','✗ Wrong'], a:'✗ Wrong', fix:'I have bought a present.', noBlank:true},
+        {q:"They haven't finished the game.", o:['✓ Correct','✗ Wrong'], a:'✓ Correct', noBlank:true},
+        {q:'My dad has clean the car.', o:['✓ Correct','✗ Wrong'], a:'✗ Wrong', fix:'My dad has cleaned the car.', noBlank:true},
+      ]},
+
+    // ===== Controlled practice · Cognitive mediation =====
+    { id:'e10', divider:true, title:'Have or has? · 10 pts', es:'Completa cada oración con HAVE o HAS según el sujeto', how:'TAP',
+      en:'Complete with HAVE or HAS.', esi:'Completa cada oración con HAVE o HAS según el sujeto. (1 pt c/u)', type:'choice', keep:true,
+      items:[
+        {q:'I ___ helped my neighbour with her shopping bags.', o:['have','has'], a:'have', s:'aff'},
+        {q:'She ___ visited a sick friend at the hospital.', o:['have','has'], a:'has', s:'aff'},
+        {q:'They ___ collected money for children with cancer.', o:['have','has'], a:'have', s:'aff'},
+        {q:'He ___ done all his homework this week.', o:['have','has'], a:'has', s:'aff'},
+        {q:'We ___ volunteered at the school library.', o:['have','has'], a:'have', s:'aff'},
+        {q:'Shakira ___ supported education in Colombia.', o:['have','has'], a:'has', s:'aff'},
+        {q:'My brother and I ___ studied English for three years.', o:['have','has'], a:'have', s:'aff'},
+        {q:'The students ___ invited their families to the show.', o:['have','has'], a:'have', s:'aff'},
+        {q:'My mother ___ cooked lunch for the whole family.', o:['have','has'], a:'has', s:'aff'},
+        {q:'You ___ shared your food with a homeless person.', o:['have','has'], a:'have', s:'aff'},
+      ]},
+    { id:'e11', title:'Find & fix the error · 10 pts', es:'Encuentra el error y escribe la oración correcta', how:'FIX',
+      en:'Each sentence has ONE error. Write the correct sentence.', esi:'Cada oración tiene UN error. Búscalo (o toca “Hint”) y escribe la oración CORRECTA.', type:'sentence',
+      items:[
+        {q:'She have visited her grandmother twice this week.', err:'have', a:['She has visited her grandmother twice this week.']},
+        {q:'I has helped my mother in the kitchen every day.', err:'has', a:['I have helped my mother in the kitchen every day.']},
+        {q:'We has volunteered at the animal shelter this month.', err:'has', a:['We have volunteered at the animal shelter this month.']},
+        {q:'They have buyed presents for the poor children.', err:'buyed', a:['They have bought presents for the poor children.']},
+        {q:'He have collected donations for the food bank.', err:'have', a:['He has collected donations for the food bank.']},
+        {q:'My sister has celebrate her birthday with many friends.', err:'celebrate', a:['My sister has celebrated her birthday with many friends.']},
+        {q:'The students have doed their homework about citizens.', err:'doed', a:['The students have done their homework about citizens.']},
+        {q:'Shakira have promoted education in Colombia since 1997.', err:'have', a:['Shakira has promoted education in Colombia since 1997.']},
+        {q:'I have go to the community centre every Saturday.', err:'go', a:['I have gone to the community centre every Saturday.']},
+        {q:'She has make new friends at her new high school.', err:'make', a:['She has made new friends at her new high school.']},
+      ]},
+    { id:'e12', title:'Present Simple → Present Perfect · 10 pts', es:'Reescribe en Present Perfect afirmativo', how:'REWRITE',
+      en:'Rewrite in the Present Perfect. Example: I visit → I have visited.', esi:'Cambia del PRESENTE SIMPLE al PRESENT PERFECT AFIRMATIVO. La expresión de tiempo (every Sunday…) es opcional.', type:'sentence',
+      items:[
+        {q:'I visit my grandmother every Sunday.', a:['I have visited my grandmother.','I have visited my grandmother every Sunday.']},
+        {q:'She helps at the community centre after school.', a:['She has helped at the community centre.','She has helped at the community centre after school.']},
+        {q:'We study English every day.', a:['We have studied English.','We have studied English every day.']},
+        {q:'They watch documentaries about Colombia.', a:['They have watched documentaries about Colombia.']},
+        {q:'He collects money for a charity.', a:['He has collected money for a charity.']},
+        {q:'My mother cooks for the whole family.', a:['My mother has cooked for the whole family.']},
+        {q:'We invite our friends for lunch on Sundays.', a:['We have invited our friends for lunch.','We have invited our friends for lunch on Sundays.']},
+        {q:'She dances with her sister at parties.', a:['She has danced with her sister at parties.','She has danced with her sister.']},
+        {q:'You clean your bedroom every morning.', a:['You have cleaned your bedroom.','You have cleaned your bedroom every morning.']},
+        {q:'The teacher explains Present Perfect very well.', a:['The teacher has explained Present Perfect very well.','The teacher has explained the Present Perfect very well.']},
+      ]},
+    { id:'e13', title:'Cut & order · answers in colors', es:'Tarjetas del ejercicio 4 · respuestas en colores', how:'BUILD', colors:true, fixedOrder:true,
+      en:'Put the cards in order. Then see the answer in colors.', esi:'Ordena las tarjetas (las mismas del cuadernillo). Luego mira la respuesta en colores: sujeto · have/has · participio · complemento.', type:'build',
+      items:[
+        {w:['I','have','helped','my','neighbours','this','week'], jumble:['neighbours','helped','I','week','this','have','my'], s:'aff'},
+        {w:['She','has','visited','her','grandmother','three','times'], jumble:['has','grandmother','She','three','times','her','visited'], s:'aff'},
+        {w:['We','have','collected','books','for','the','library'], jumble:['for','collected','books','We','the','library','have'], s:'aff'},
+        {w:['They','have','celebrated','Christmas','in','Sincelejo'], jumble:['Sincelejo','have','in','Christmas','They','celebrated'], s:'aff'},
+        {w:['My','brother','has','studied','English','for','five','years'], jumble:['five','brother','for','English','years','has','My','studied'], s:'aff'},
+        {w:['Shakira','has','supported','poor','children','since','1997'], jumble:['poor','since','supported','children','Shakira','1997','has'], s:'aff'},
+      ]},
+  ];
+
+  const state = {};
+  EX.forEach(ex => state[ex.id] = ex.items.map(()=>null));
+  const host = document.getElementById('exercises');
+
+  function promptHTML(it, i, text){
+    return `<div class="prompt"><span class="n">${i+1}</span><span class="txt">${text}</span>${signTag(it.s)}</div>`;
+  }
+
+  function buildItem(el, ex, it, i){
+    if(ex.type === 'choice') buildChoice(el, ex, it, i);
+    else if(ex.type === 'build') buildTiles(el, ex, it, i);
+    else if(ex.type === 'type') buildType(el, ex, it, i);
+    else if(ex.type === 'sentence') buildSentence(el, ex, it, i);
+    else if(ex.type === 'match') buildMatch(el, ex, it, i);
+  }
+  function renderItems(sec, ex){
+    const list = sec.querySelector('.items');
+    list.innerHTML = '';
+    ex.items.forEach((it, i)=>{
+      const el = document.createElement('div');
+      el.className = 'item';
+      buildItem(el, ex, it, i);
+      list.appendChild(el);
+    });
+  }
+
+  function renderAll(){
+    host.innerHTML = '';
+    EX.forEach((ex, idx)=>{
+      if(ex.divider){
+        const d = document.createElement('div');
+        d.className = 'divider';
+        d.innerHTML = '<div class="k">Controlled practice · Cognitive mediation</div>' +
+          '<h2>Práctica controlada · Mediación cognitiva</h2>' +
+          '<p>Los mismos ejercicios de tu cuadernillo impreso. Resuélvelos aquí y compara tus respuestas.</p>';
+        host.appendChild(d);
+      }
+      const sec = document.createElement('section');
+      sec.className = 'block';
+      sec.setAttribute('aria-labelledby', ex.id + '-h');
+      let extra = '';
+      if(ex.examples){
+        extra = '<div class="examples">' + ex.examples.map(([L, s])=>
+          `<div class="exm"><span class="L">${L}</span><span>${esc(s)}</span>${canSpeak ? `<button class="say" type="button" data-say="${esc(s)}" aria-label="Listen" style="margin-left:auto">🔊</button>` : ''}</div>`).join('') + '</div>';
+      }
+      if(ex.colors){
+        extra = '<div class="legend"><b>Colors:</b>' +
+          '<span class="lg"><span class="rw s">Subject</span></span>' +
+          '<span class="lg"><span class="rw h">have / has</span></span>' +
+          '<span class="lg"><span class="rw p">past participle</span></span>' +
+          '<span class="lg"><span class="rw c">complement</span></span></div>';
+      }
+      const colorAll = ex.colors ? `<button class="act primary" type="button" data-allcolors>🎨 Show all answers in colors</button>` : '';
+      sec.innerHTML = `
+        <div class="sec-head">
+          <div class="sec-num">G${idx+1}</div>
+          <h2 id="${ex.id}-h">${esc(ex.title)} <span class="es">${esc(ex.es)}</span></h2>
+          <span class="mini" id="${ex.id}-mini">0 / ${ex.items.length}</span>
+        </div>
+        <div class="card">
+          <div class="ex-intro"><span class="how">${ex.how}</span><div>${esc(ex.en)}<span class="es">${esc(ex.esi)}</span></div></div>
+          ${extra}
+          <div class="items"></div>
+          <div class="ex-foot">
+            <span class="ex-score" id="${ex.id}-score">Score: <b>0</b> / ${ex.items.length}</span>
+            <span style="display:flex;gap:8px;flex-wrap:wrap">${colorAll}<button class="act" type="button" data-retry>↺ Try this game again</button></span>
+          </div>
+        </div>`;
+      host.appendChild(sec);
+      wireSay(sec);
+      renderItems(sec, ex);
+      sec.querySelector('[data-retry]').addEventListener('click', ()=>{
+        state[ex.id] = ex.items.map(()=>null);
+        renderItems(sec, ex);
+        update();
+      });
+      const ac = sec.querySelector('[data-allcolors]');
+      if(ac) ac.addEventListener('click', ()=>{
+        sec.querySelectorAll('.item').forEach(it=>{ if(it._reveal) it._reveal(); });
+      });
+    });
+    update();
+  }
+
+  // ----- MATCH -----
+  function buildMatch(el, ex, it, i){
+    const selId = ex.id + '-sel-' + i;
+    el.innerHTML = `<div class="match-row"><span class="prompt" style="margin:0"><span class="n">${i+1}</span></span>
+      <select id="${selId}" aria-label="Letter for ${esc(it.use)}"><option value="">( ? )</option>${ex.examples.map(([L])=>`<option value="${L}">( ${L} )</option>`).join('')}</select>
+      <span class="use">${esc(it.use)}<small>${esc(it.en)}</small></span></div><div class="fb" role="status"></div>`;
+    const sel = el.querySelector('select');
+    const fb = el.querySelector('.fb');
+    sel.addEventListener('change', ()=>{
+      if(!sel.value || state[ex.id][i] !== null) return;
+      const ok = sel.value === it.a;
+      state[ex.id][i] = ok;
+      sel.disabled = true;
+      sel.classList.add(ok ? 'ok' : 'bad');
+      const example = ex.examples.find(e=> e[0] === it.a)[1];
+      fb.className = 'fb ' + (ok ? 'ok' : 'no');
+      fb.innerHTML = (ok ? '✓ Yes! ' : '✗ Correct: <b>' + it.a + '</b> · ') +
+        '<span class="fix">' + esc(example) + '</span> <span class="kw">' + esc(it.kw) + '</span>' + sayBtn();
+      hookSay(fb, example);
+      update();
+    });
+  }
+
+  // ----- CHOICE -----
+  function buildChoice(el, ex, it, i){
+    const shown = it.noBlank ? esc(it.q) : esc(it.q).replace('___', '<span class="blank">&nbsp;</span>');
+    el.innerHTML = promptHTML(it, i, shown) + '<div class="opts"></div><div class="fb" role="status"></div>';
+    const opts = el.querySelector('.opts');
+    const fb = el.querySelector('.fb');
+    const order = ex.keep ? it.o : shuffle(it.o);
+    order.forEach(o=>{
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt'; b.textContent = o;
+      if(ex.wide) b.style.fontSize = '17px';
+      b.addEventListener('click', ()=>{
+        if(state[ex.id][i] !== null) return;
+        const ok = o === it.a;
+        state[ex.id][i] = ok;
+        opts.querySelectorAll('.opt').forEach(x=>{
+          x.disabled = true;
+          if(x.textContent === it.a) x.classList.add('right');
+        });
+        if(!ok) b.classList.add('wrong');
+        const blank = el.querySelector('.blank');
+        if(blank){ blank.textContent = it.a; blank.classList.add('ok'); }
+        const full = it.fix ? it.fix : ex.full ? it.a : it.noBlank ? it.q : fillSentence(it.q, it.a);
+        let html = ok ? '✓ Great! ¡Muy bien!' : '✗ Not this time. <span class="fix">Correct: <b>' + esc(it.a) + '</b></span>';
+        if(it.fix && it.a === '✗ Wrong') html += ' <span class="fix">→ <b>' + esc(it.fix) + '</b></span>';
+        fb.className = 'fb ' + (ok ? 'ok' : 'no');
+        fb.innerHTML = html + sayBtn();
+        hookSay(fb, full);
+        update();
+      });
+      opts.appendChild(b);
+    });
+  }
+
+  // ----- BUILD -----
+  function buildTiles(el, ex, it, i){
+    const target = it.w.join(' ');
+    let pool;
+    if(ex.fixedOrder && it.jumble) pool = it.jumble.slice();
+    else { pool = shuffle(it.w); if(pool.join(' ') === target) pool = pool.slice().reverse(); }
+    const colorBtn = ex.colors ? '<button class="act" type="button" data-color>🎨 Answer in colors</button>' : '';
+    el.innerHTML = promptHTML(it, i, ex.colors ? '<b>SENTENCE ' + (i+1) + '</b> <span style="color:var(--muted)">▸ desordenada</span>' : '<span style="color:var(--muted)">Make the sentence ·</span> <i>Forma la oración</i>') +
+      '<div class="build-answer" aria-label="Your sentence"></div><div class="build-pool"></div>' +
+      '<div class="build-controls"><button class="act primary" type="button" data-check>Check ✓</button><button class="act" type="button" data-clear>Clear</button>' + colorBtn + '</div>' +
+      '<div class="fb" role="status"></div>';
+    const ans = el.querySelector('.build-answer');
+    const pl = el.querySelector('.build-pool');
+    const fb = el.querySelector('.fb');
+    const checkBtn = el.querySelector('[data-check]');
+    const clearBtn = el.querySelector('[data-clear]');
+    const cBtn = el.querySelector('[data-color]');
+    let solved = false;
+
+    function tileClass(w){
+      const lw = w.toLowerCase();
+      if(lw === 'have' || lw === 'has') return 'tile hv';
+      if(lw === "haven't" || lw === "hasn't") return 'tile ng';
+      return 'tile';
+    }
+    function makeTile(w, inAnswer){
+      const t = document.createElement('button');
+      t.type = 'button'; t.className = tileClass(w); t.textContent = w;
+      t.addEventListener('click', ()=>{
+        if(solved) return;
+        if(inAnswer){ ans.removeChild(t); pl.appendChild(makeTile(w, false)); }
+        else { pl.removeChild(t); ans.appendChild(makeTile(w, true)); }
+      });
+      return t;
+    }
+    pool.forEach(w=> pl.appendChild(makeTile(w, false)));
+
+    function lock(){
+      solved = true;
+      checkBtn.disabled = true; clearBtn.disabled = true; if(cBtn) cBtn.disabled = true;
+    }
+    function showColored(ok){
+      const sentence = target + '.';
+      fb.className = 'fb col ' + (ok ? 'ok' : 'no');
+      fb.innerHTML = (ok ? '✓ Perfect!' : 'Answer · Respuesta:') + sayBtn() + colorize(sentence);
+      hookSay(fb, sentence);
+    }
+    el._reveal = function(){
+      if(solved) return;
+      if(state[ex.id][i] === null) state[ex.id][i] = false;
+      lock();
+      showColored(false);
+      update();
+    };
+
+    checkBtn.addEventListener('click', ()=>{
+      if(solved) return;
+      const words = Array.from(ans.querySelectorAll('.tile')).map(t=>t.textContent);
+      if(words.length < it.w.length){
+        fb.className = 'fb no'; fb.innerHTML = 'Use all the words. · Usa todas las palabras.'; return;
+      }
+      const ok = words.join(' ') === target;
+      if(state[ex.id][i] === null) state[ex.id][i] = ok;
+      if(ok){
+        lock();
+        showColored(true);
+        say(target + '.');
+      } else {
+        fb.className = 'fb no';
+        fb.innerHTML = '✗ Try again! Remember: <b>Subject + have/has (not) + participle</b>.';
+      }
+      update();
+    });
+    clearBtn.addEventListener('click', ()=>{
+      if(solved) return;
+      Array.from(ans.querySelectorAll('.tile')).forEach(t=>{ ans.removeChild(t); pl.appendChild(makeTile(t.textContent, false)); });
+      fb.className = 'fb'; fb.innerHTML = '';
+    });
+    if(cBtn) cBtn.addEventListener('click', ()=> el._reveal());
+  }
+
+  // ----- TYPE (one word) -----
+  function buildType(el, ex, it, i){
+    const shown = esc(it.q).replace('___', '<span class="blank">&nbsp;</span>');
+    const inputId = ex.id + '-in-' + i;
+    el.innerHTML = promptHTML(it, i, shown) +
+      `<div class="type-row"><input id="${inputId}" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Your answer" placeholder="type here…"><button class="act primary" type="button" data-check>Check ✓</button><button class="act" type="button" data-show>Show</button></div>` +
+      '<div class="fb" role="status"></div>';
+    const input = el.querySelector('input');
+    const fb = el.querySelector('.fb');
+    const checkBtn = el.querySelector('[data-check]');
+    const showBtn = el.querySelector('[data-show]');
+    const blank = el.querySelector('.blank');
+    let solved = false;
+
+    function finish(ok, word){
+      solved = true;
+      input.disabled = true; checkBtn.disabled = true; showBtn.disabled = true;
+      blank.textContent = word; blank.classList.add('ok');
+      const sentence = fillSentence(it.q, word);
+      fb.className = 'fb ' + (ok ? 'ok' : 'no');
+      fb.innerHTML = (ok ? '✓ Excellent! ¡Excelente!' : 'Answer: <b>' + esc(word) + '</b>') +
+        ' <span class="fix">' + esc(sentence) + '</span>' + sayBtn();
+      hookSay(fb, sentence);
+    }
+    function check(){
+      if(solved) return;
+      const v = norm(input.value);
+      if(!v){ fb.className = 'fb no'; fb.textContent = 'Write a word first. · Escribe primero.'; return; }
+      const ok = it.a.some(a=> norm(a) === v);
+      if(state[ex.id][i] === null) state[ex.id][i] = ok;
+      if(ok){ input.classList.add('ok'); finish(true, input.value.trim()); }
+      else { input.classList.add('bad'); fb.className = 'fb no'; fb.innerHTML = '✗ Try again or press <b>Show</b>. · Intenta otra vez.'; setTimeout(()=> input.classList.remove('bad'), 700); }
+      update();
+    }
+    checkBtn.addEventListener('click', check);
+    input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); check(); } });
+    showBtn.addEventListener('click', ()=>{
+      if(solved) return;
+      if(state[ex.id][i] === null) state[ex.id][i] = false;
+      finish(false, it.a[0]);
+      update();
+    });
+  }
+
+  // ----- SENTENCE (full sentence: fix the error / rewrite) -----
+  function buildSentence(el, ex, it, i){
+    const isFix = !!it.err;
+    let shown;
+    if(isFix){
+      let marked = false;
+      shown = '❌ ' + it.q.split(' ').map(t=>{
+        const bare = t.replace(/[.,]$/,'');
+        if(!marked && bare.toLowerCase() === it.err.toLowerCase()){ marked = true; return '<span class="errw">' + esc(t) + '</span>'; }
+        return esc(t);
+      }).join(' ');
+    } else {
+      shown = esc(it.q);
+    }
+    const inputId = ex.id + '-in-' + i;
+    const hint = isFix ? '<button class="act" type="button" data-hint>💡 Hint</button>' : '';
+    el.innerHTML = promptHTML(it, i, shown) +
+      `<div class="type-row"><input class="wide" id="${inputId}" type="text" autocomplete="off" autocapitalize="sentences" autocorrect="off" spellcheck="false" aria-label="Write the correct sentence" placeholder="${isFix ? '✓ Write the correct sentence…' : '→ Write it in Present Perfect…'}"><button class="act primary" type="button" data-check>Check ✓</button>${hint}<button class="act" type="button" data-show>Show</button></div>` +
+      '<div class="fb" role="status"></div>';
+    const input = el.querySelector('input');
+    const fb = el.querySelector('.fb');
+    const checkBtn = el.querySelector('[data-check]');
+    const showBtn = el.querySelector('[data-show]');
+    const hintBtn = el.querySelector('[data-hint]');
+    let solved = false;
+
+    function finish(ok){
+      solved = true;
+      input.disabled = true; checkBtn.disabled = true; showBtn.disabled = true; if(hintBtn) hintBtn.disabled = true;
+      const model = it.a[0];
+      const ew = el.querySelector('.errw'); if(ew) ew.classList.add('err-hl');
+      fb.className = 'fb col ' + (ok ? 'ok' : 'no');
+      fb.innerHTML = (ok ? '✓ Excellent! ¡Excelente!' : 'Answer · Respuesta:') + sayBtn() + colorize(model);
+      hookSay(fb, model);
+    }
+    function check(){
+      if(solved) return;
+      const v = normS(input.value);
+      if(!v){ fb.className = 'fb no'; fb.textContent = 'Write the sentence first. · Escribe la oración primero.'; return; }
+      const ok = it.a.some(a=> normS(a) === v);
+      if(state[ex.id][i] === null) state[ex.id][i] = ok;
+      if(ok){ input.classList.add('ok'); finish(true); }
+      else {
+        input.classList.add('bad');
+        fb.className = 'fb no';
+        fb.innerHTML = isFix ? '✗ Not yet. Check <b>have/has</b> and the <b>participle</b>. Use 💡 Hint.' : '✗ Not yet. Use <b>have/has + participle</b> (-ed, or bought/done/made/had/gone).';
+        setTimeout(()=> input.classList.remove('bad'), 700);
+      }
+      update();
+    }
+    checkBtn.addEventListener('click', check);
+    input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); check(); } });
+    if(hintBtn) hintBtn.addEventListener('click', ()=>{
+      const ew = el.querySelector('.errw'); if(ew) ew.classList.add('err-hl');
+      hintBtn.disabled = true;
+    });
+    showBtn.addEventListener('click', ()=>{
+      if(solved) return;
+      if(state[ex.id][i] === null) state[ex.id][i] = false;
+      finish(false);
+      update();
+    });
+  }
+
+  // ---------- Score / progress ----------
+  function update(){
+    let total = 0, answered = 0, correct = 0;
+    const grid = document.getElementById('reportGrid');
+    grid.innerHTML = '';
+    EX.forEach((ex, idx)=>{
+      const st = state[ex.id];
+      const c = st.filter(x=> x === true).length;
+      const a = st.filter(x=> x !== null).length;
+      total += st.length; answered += a; correct += c;
+      const mini = document.getElementById(ex.id + '-mini');
+      if(mini) mini.textContent = c + ' / ' + st.length;
+      const sc = document.getElementById(ex.id + '-score');
+      if(sc) sc.innerHTML = 'Score: <b>' + c + '</b> / ' + st.length;
+      const g = document.createElement('div');
+      g.className = 'rg';
+      g.innerHTML = '<span>G' + (idx+1) + ' ' + esc(ex.title.replace(/ · .*$/,'')) + '</span><b>' + c + '/' + st.length + '</b>';
+      grid.appendChild(g);
+    });
+    const pct = total ? Math.round(answered / total * 100) : 0;
+    document.getElementById('meterFill').style.width = pct + '%';
+    document.getElementById('meter').setAttribute('aria-valuenow', pct);
+    document.getElementById('scorePill').textContent = correct + ' / ' + total;
+    document.getElementById('bigScore').textContent = correct + ' / ' + total;
+
+    const ratio = total ? correct / total : 0;
+    const stars = document.getElementById('stars');
+    const msg = document.getElementById('msg');
+    if(answered === 0){
+      stars.textContent = '☆☆☆';
+      msg.innerHTML = 'Start the games! <span class="es">¡Empieza los juegos!</span>';
+    } else if(ratio >= 0.9){
+      stars.textContent = '★★★';
+      msg.innerHTML = 'Amazing! You have learned the Present Perfect. <span class="es">¡Increíble! Has aprendido el Present Perfect.</span>';
+    } else if(ratio >= 0.7){
+      stars.textContent = '★★☆';
+      msg.innerHTML = 'Very good! You have practiced a lot. <span class="es">¡Muy bien! Has practicado mucho.</span>';
+    } else if(ratio >= 0.5){
+      stars.textContent = '★☆☆';
+      msg.innerHTML = "Good start! You haven't finished yet — keep going. <span class=\"es\">¡Buen comienzo! Repite “Have or has?”, “Haven't or hasn't?” y “Short forms”.</span>";
+    } else {
+      stars.textContent = '☆☆☆';
+      msg.innerHTML = "Keep practicing! Look at section 1 again. <span class=\"es\">Sigue practicando. Mira otra vez la sección 1.</span>";
+    }
+  }
+
+  // ---------- About me ----------
+  const meSign = document.getElementById('meSign');
+  const meAct = document.getElementById('meAct');
+  const myList = document.getElementById('myList');
+  document.getElementById('meAdd').addEventListener('click', ()=>{
+    const sign = meSign.value;
+    const sentence = (sign === 'have' ? 'I have ' : "I haven't ") + meAct.value;
+    const li = document.createElement('li');
+    li.className = sign === 'have' ? 'aff' : 'neg';
+    li.innerHTML = sayBtn() + '<span>' + esc(sentence) + '</span><button class="rm" type="button" aria-label="Remove">✕</button>';
+    hookSay(li, sentence);
+    li.querySelector('.rm').addEventListener('click', ()=> li.remove());
+    myList.appendChild(li);
+    say(sentence);
+  });
+
+  // ---------- Reset all ----------
+  document.getElementById('resetAll').addEventListener('click', ()=>{
+    EX.forEach(ex => state[ex.id] = ex.items.map(()=>null));
+    renderAll();
+    myList.innerHTML = '';
+    document.querySelectorAll('.reveal').forEach(b=>{ b.classList.remove('shown'); b.textContent = 'Show answer'; });
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  wireSay(document);
+  renderAll();
+})();
+</script>
+
+</body>
+</html>
